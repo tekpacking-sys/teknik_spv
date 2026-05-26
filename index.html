@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <!-- Firebase App (inti) -->
+  <script src="https://apis.google.com/_/scs/abc-static/_/js/k=gapi.lb.id.-10fEKukHoM.O/m=gapi_iframes/rt=j/sv=1/d=1/ed=1/rs=AHpOoo8DrL1aoJWbnvoqPLWTyh3DXRxHMA/cb=gapi.loaded_0?le=scs" async=""></script><script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <!-- Firebase Firestore (database) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+    apiKey: "AIzaSyCUp9V3Z1gKtXSJKfsB_Ht79fiMGv0G038",
+    authDomain: "laporan-harian-teknik-packing.firebaseapp.com",
+    projectId: "laporan-harian-teknik-packing",
+    storageBucket: "laporan-harian-teknik-packing.firebasestorage.app",
+    messagingSenderId: "554280893988",
+    appId: "1:554280893988:web:ad46ef520b5c4310f062b1"
+  };
+
+// Inisialisasi Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden; /* penting */
+    font-family: sans-serif;
+}
+
+    .hasil {
+        display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    background-color: #F0F8FF;
+}
+    .header {
+    flex-shrink: 0;
+    height: 55px;
+    background: aliceblue;
+    border-bottom: 1px solid #ccc;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+    .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* === hamburger===*/
+    .menu-wrapper{
+    position: relative;
+}
+
+.menu-dropdown{
+    position: absolute;
+    top: 48px;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    background: #0001;
+    border-radius: 10px;
+    z-index: 100;
+}
+
+.menu-dropdown.show{
+    display: flex;
+}
+
+    .btn-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    background-color: #F0F8FF;
+    color: black;
+    transition: background 0.3s;
+    outline: none; 
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 3px;
+}
+    
+    svg {
+        fill: #000;
+    }
+    
+    .google-icon-btn {
+    height: 38px;
+    padding: 0 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: ghostwhite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 3px 3px;
+}
+
+.google-icon-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+}
+    
+    button:focus {
+    outline: none;
+}
+
+button:active {
+    outline: none;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+    
+    .scroll-area {
+        flex: 1;
+    overflow-y: auto;
+    padding: 5px;
+
+    /* biar scroll halus di HP */
+    -webkit-overflow-scrolling: touch;
+}
+    .footer {
+    flex-shrink: 0;
+    height: 50px;
+    background: aliceblue;
+    border-top: 1px solid #ccc;
+
+    display: flex;
+    align-items: center;
+}
+
+    .footer p {
+    color: #333333 !important; 
+}
+
+    .main-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .main-table th, .main-table td {
+        border: 1px solid black;
+        padding: 6px 10px;
+        text-align: left;
+        font-size: 14px;
+        color: #000;
+    }
+    .main-table th {
+        text-align: center;
+        background-color: aliceblue;
+    }
+    
+/* CSS untuk menengahkan kolom JUMLAH (kolom ke-3) */
+    .main-table th:nth-child(3),
+    .main-table td:nth-child(3) {
+    text-align: center;
+}
+    
+    .category-row {
+        background-color: #99CCFF !important;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    .task-group {
+        margin-bottom: 50px; 
+        border-bottom: 3px dashed #0008;
+        padding-bottom: 20px;
+    }
+    
+    .task-actions {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: right;
+        gap: 20px;
+    }
+    
+    h3 { 
+        margin-left: 10px;
+        font-size: 16px;
+        margin-top: 0;
+        margin-bottom: 0;
+}
+    h2 {
+        margin-left: 0px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .fab-btn {
+        margin-top: 0px;
+        right: 60px;
+        width: 36px; 
+        height: 36px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        background-color: green;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #darkToggle {
+    position: static;
+    margin-left: 0;
+}
+
+    button {
+        background-color: transparent;
+        border: none;
+        font-weight: bold;
+    }
+        
+    .submit-button, .close-btn { background: none; border: none; cursor: pointer; }
+    .close-btn {
+        margin-left: 230px;
+    }
+    .del {
+        background-color: #DBE9FA;
+        width: 60%;
+        height: 20%;
+        max-width: 400px;
+        margin: 210px auto;
+        padding: 30px;
+        padding-top: 7%;
+        border: none;
+        border-radius: 10px;
+        text-align: center;
+    }
+    .hps {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    p {
+        color: #000;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .blue { width: 70px; padding: 10px; background-color: dodgerblue; color: white; border: none; border-radius: 5px; }
+    .red { width: 70px; padding: 10px; background-color: red; color: white; border: none; border-radius: 5px; }
+/* CSS Baru untuk merapikan titik dua di header */
+    .info-table {
+    border: none;
+    margin-bottom: 10px;
+    color: #000;
+}
+    .info-table td {
+    border: none !important;
+    padding: 2px 5px 2px 0 !important;
+    font-weight: bold;
+    font-size: 14px;
+    vertical-align: top;
+}
+/* Lebar tetap untuk label agar titik dua sejajar */
+    .info-table td:first-child {
+    width: 80px;
+}
+    .info-table td:nth-child(2) {
+    width: 10px;
+}
+
+/*=== DIALOG===*/
+    .dialog { display: none; position: fixed; z-index: 20; left: 0; top: 0; width: 100%; height: 100%; background-color: #0009;
+    }
+    .dialog.show { display: block; }
+    .form-container {
+        background-color: #DBE9FA;
+        width: 93%;
+        max-width: 400px;
+        margin: 60px auto;
+        border: 1px solid #333;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+    }
+    .form-body { overflow-y: auto; padding: 5px; flex: 1; }
+    .form-footer { 
+        display: flex;
+        padding: 15px;
+        background: #DBE9FA;
+        border-top: 1px solid #ccc;
+        height: 6%;
+        justify-content: left;
+        gap: 25px;
+        border-radius: 10px;
+    }
+    .form-group {
+        display: flex;
+    gap: 8px;
+    position: relative;
+    align-items: center;
+    margin-bottom: 6px;
+    }
+    
+    .form-header {
+        padding: 20px;
+        padding-left: 5px;
+    }
+    
+    .form-group label {
+        flex: 0 0 35%;
+    font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group select {
+    background: #DBE9FA;
+    border: 1px solid #0008; 
+    border-radius: 3px;
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    font-size: 14px;
+    }
+    
+    .textarea {
+        background-color: #DBE9FA;
+        width: 99%;
+        margin-left: 2px;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #0009; 
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 14px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 10px;
+    } 
+
+    fieldset {
+        border: 1px solid #0005;
+        border-radius: 10px; margin-bottom: 20px; 
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    }
+    legend { font-size: 16px; font-weight: bold; }
+
+    .custom-autocomplete-list {
+        position: absolute; 
+        z-index: 100;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 60%; right: 5px;
+        max-height: 150px;
+        overflow-y: auto;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        display: none;
+    }
+    .custom-autocomplete-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; color: #333; font-size: 15px; }
+
+/* == DARKMODE ==== */
+    body.dark {
+    background-color: #444;
+}
+
+    body.dark .hasil {
+    background-color: #444;
+    border-color: #fff8;
+}
+
+    body.dark .main-table th, body.dark .main-table td {
+        border: 1px solid #fff6;
+        padding: 6px 10px;
+        text-align: left;
+        font-size: 14px;
+        color: #fff;
+    }
+    body.dark .main-table th {
+        text-align: center;
+        background-color: #333;
+    }
+    
+    body.dark .main-table th:nth-child(3),
+    body.dark .main-table td:nth-child(3) {
+    text-align: center;
+}
+    
+    body.dark .category-row {
+        background-color: #333 !important; /* Warna biru seperti gambar */
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    
+    body.dark .info-table {
+        color: #fff;
+    }
+
+body.dark .header {
+    background: #444;
+    border: none;
+    color: #fff;
+}
+
+body.dark .menu-dropdown{
+    background: #333;
+    border: 1px solid #fff3;
+}
+
+body.dark svg {
+        fill: #fff;
+    }
+
+body.dark .btn-circle {
+        background-color: #444;
+        border: 1px solid #fff3;
+        color: white;
+        }
+
+body.dark .google-icon-btn {
+    background: #444;
+    color: #fff;
+    border-color: #fff3;
+}
+
+
+body.dark .footer {
+    flex-shrink: 0;
+    height: 50px;
+    background: #444!important;
+    border-top: 1px solid #0004;
+
+    display: flex;
+    align-items: center;
+}
+
+body.dark .footer p {
+    color: #fff !important; 
+}
+
+body.dark input,
+body.dark select {
+    background-color: #fff2;
+    color: #fff;
+    border: 1px solid #fff3;
+    border-radius: 3px;
+}
+body.dark textarea {
+    background-color: #333;
+    color: #e5e7eb;
+    border: 1px solid #fff5;
+    border-radius: 10px;
+}
+
+body.dark legend { 
+        color: #fff;
+    }
+
+body.dark .fab-btn {
+    background-color: #333;
+}
+
+body.dark .del {
+        background-color: #2f2f2f;
+        color: #fff;
+        border: 1px solid ;
+    }
+    
+body.dark .task-group {
+        border-bottom: 3px dashed #fff8;
+    }
+    
+body.dark .blue,
+body.dark .red { 
+    width: 70px;
+    padding: 10px;
+    background-color: #444;
+    color: white;
+    border: 0.5px solid ;
+    border-radius: 5px; }
+
+body.dark .form-container {
+    background-color: #333!important;
+    color: #e5e7eb;
+    border: 1px solid #fff6;
+}
+
+body.dark .form-header h3 {
+    color: #e5e7eb;
+}
+
+body.dark .form-footer {
+    background-color: #333!important;
+    border-top: none;
+    border-left: none ;
+    border-right: none ;
+    border-radius: 10px;
+}
+
+body.dark .form-group label {
+    color: #e5e7eb;
+    font-size: 14px;
+}
+
+body.dark .form-group input,
+body.dark .form-group select {
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #fff6;
+    }
+
+body.dark .rinci label {
+    color: #fff;
+}
+body.dark fieldset {
+    background-color: #333;
+    border: 1px solid #fff5;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+  </style>
+  <title>Laporan Harian</title>
+<script src="https://apis.google.com/js/api.js?onload=__iframefcb639968" type="text/javascript" charset="UTF-8" gapi_processed="true"></script></head>
+<body>
+<!-- MAIN SCREEN  -->
+    <div class="hasil" id="main-content">
+    <div class="header">
+        <h2>Laporan Harian</h2>
+      <div class="header-actions">
+        <div class="menu-wrapper">
+          <button id="menuToggle" class="btn-circle">☰</button>
+         <div id="menuDropdown" class="menu-dropdown">
+           <button id="loginBtn" class="google-icon-btn" onclick="login()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.5 24c0-1.55-.15-3.24-.47-4.77H24v9.03h12.75c-.55 2.97-2.22 5.5-4.75 7.19l7.4 5.74C43.75 37.14 46.5 31.17 46.5 24z"/>
+        <path fill="#FBBC05" d="M10.54 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.98-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.4-5.74c-2.11 1.42-4.81 2.3-8.49 2.3-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+    <span></span>
+</button>
+    
+    <button id="refreshBtn" class="btn-circle" style="font-size: 30px;font-weight:bold;;"><svg width="1792" height="1792" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1639 1056q0 5-1 7-64 268-268 434.5t-478 166.5q-146 0-282.5-55t-243.5-157l-129 129q-19 19-45 19t-45-19-19-45v-448q0-26 19-45t45-19h448q26 0 45 19t19 45-19 45l-137 137q71 66 161 102t187 36q134 0 250-65t186-179q11-17 53-117 8-23 30-23h192q13 0 22.5 9.5t9.5 22.5zm25-800v448q0 26-19 45t-45 19h-448q-26 0-45-19t-19-45 19-45l138-138q-148-137-349-137-134 0-250 65t-186 179q-11 17-53 117-8 23-30 23h-199q-13 0-22.5-9.5t-9.5-22.5v-7q65-268 270-434.5t480-166.5q146 0 284 55.5t245 156.5l130-129q19-19 45-19t45 19 19 45z"></path></svg></button>
+    <button id="darkToggle" class="btn-circle" title="Mode Gelap">🌙</button>
+    <button id="btnTambahData" class="btn-circle" title="Tambah Data" style="display:none;">+</button>
+
+             
+         </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div id="tasks-container" class="scroll-area"></div>
+        <div class="footer">
+            <p style="font-size: 13px;margin-left: 10px;">© 2026. mastarno-AE</p>
+        </div>
+    </div>
+    
+        
+    <div id="dataModal" class="dialog">
+        <form id="dataForm" novalidate="">
+            <div class="form-container">
+                <div class="form-header"><h3>Input Data</h3></div>
+                <div class="form-body">
+                    <input type="hidden" id="dataId">
+                    <fieldset>
+                        <legend>Hari/Tgl</legend>
+                        <div class="form-group">
+                            <label for="hari">Hari</label>
+                            <select id="hari">
+                                <option value="">-- Pilih hari--</option>
+                                <option value="Senin">Senin</option>
+                                <option value="Selasa">Selasa</option>
+                                <option value="Rabu">Rabu</option>
+                                <option value="Kamis">Kamis</option>
+                                <option value="Jum'at">Jum'at</option>
+                                <option value="Sabtu">Sabtu</option>
+                                <option value="Minggu">Minggu</option>  
+                            </select> 
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Tanggal</label>
+                            <input type="date" id="date">
+                        </div>
+                        <div class="form-group">
+                            <label for="shift">Shift</label>
+                            <select id="shift">
+                                <option value="">-- Pilih Shift--</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+
+                <option value="Long Shift 1">Long Shift 1</option>
+                                <option value="Long Shift 2">Long Shift 2</option>
+                            </select> 
+                        </div>
+                        <div class="form-group">
+                            <label for="pic">Ka.Shift</label>
+                            <input type="text" id="pic" disabled="">
+                        </div>
+                    </fieldset>
+
+              <fieldset>
+                        <legend>YUPI 1</legend>
+                        <div class="form-group"><label>Lolipop</label><input type="text" id="lolipop"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Starchless</label><input type="text" id="starchless"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah"></div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>YUPI 5</legend>
+                        <div class="form-group"><label>Cup Sealer</label><input type="text" id="cupsealer"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Sandwich</label><input type="text" id="sandwich"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Ishida</label><input type="text" id="ishida"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Kawashima</label><input type="text" id="kawashima"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>PP</label><input type="text" id="pillow"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mpillow"></div>
+                        <div class="form-group"><label>MB</label><input type="text" id="burger"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mburger"></div>
+                        <div class="form-group"><label>Rollete</label><input type="text" id="rollete"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mrollete"></div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>YUPI 3/4</legend>
+                        <div class="form-group"><label>Ishida 1</label><input type="text" id="apem"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Ishida 2</label><input type="text" id="brem"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Kawashima</label><input type="text" id="cenil"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mcenil"></div>
+                        <div class="form-group"><label>Multipond</label><input type="text" id="cucur"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mcucur"></div>
+                        
+            <div class="form-group"><label>Dippy</label><input type="text" id="dippy"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Animal</label><input type="text" id="gethuk"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mgethuk"></div>
+                        <div class="form-group"><label>MB</label><input type="text" id="heci"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mheci"></div>
+                        <div class="form-group"><label>Cup Sealer</label><input type="text" id="jemblem"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Berrybonz</label><input type="text" id="klepon"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mklepon"></div>
+                        <div class="form-group"><label>Crunchy</label><input type="text" id="lumpia"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mlumpia"></div>
+                        <div class="form-group"><label>PP</label><input type="text" id="wajik"><div class="custom-autocomplete-list"></div></div>
+                        <div class="form-group"><label>Jumlah</label><input type="number" id="mwajik"></div>
+                    </fieldset>
+
+                    <div class="rinci">
+                        <label class="uraian">Kerusakan</label>
+                        <textarea id="uraian" class="textarea" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <p style="font-size: 10px;margin-left: 0px;">© 2026. mastarno-AE</p>
+                    <button type="button" class="red" id="close-form-btn">Batal</button>
+                    <button type="submit" class="blue" id="submit-button">Simpan</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="deleteModal" class="dialog">
+        <div class="del">
+            <h3>Konfirmasi Hapus</h3>
+            <p>Apakah Anda yakin ingin menghapus data ini?</p>
+            <div class="hps">
+                <button id="cancelDelete" class="blue">Batal</button>
+                <button id="confirmDelete" class="red">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const auth = firebase.auth();
+let currentUser = null;
+let taskIdToDelete = null;
+
+// ================= ADMIN =================
+const NAMA_USER = {
+    "dirman90@gmail.com": "Dirman",
+    "gitocahyono73@gmail.com": "Sutarno",
+    "ruslan1971@gmail.com": "Ruslan",
+    "saepudin74@gmail.com": "Saepudin"
+};
+
+// ================= LOGIN =================
+function login() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider);
+}
+
+// ================= CEK LOGIN =================
+auth.onAuthStateChanged(user => {
+    currentUser = user;
+
+    const btnTambah = document.getElementById("btnTambahData");
+    const loginBtn = document.getElementById("loginBtn");
+
+    if (user) {
+
+        if (NAMA_USER[user.email]) {
+
+            btnTambah.style.display = "flex";
+
+            loginBtn.textContent =
+                "Logout (" + user.displayName.split(' ')[0] + ")";
+
+            loginBtn.onclick = () => auth.signOut();
+
+        } else {
+
+            alert("Email " + user.email + " tidak terdaftar sebagai Admin.");
+
+            auth.signOut();
+        }
+
+    } else {
+
+        btnTambah.style.display = "none";
+
+        loginBtn.textContent = "";
+
+        loginBtn.onclick = login;
+        }
+    });
+
+// ================= DATABASE =================
+let taskData = [];
+
+const dataModal = document.getElementById("dataModal");
+const dataForm = document.getElementById("dataForm");
+const btnTambahData = document.getElementById("btnTambahData");
+const closeFormBtn = document.getElementById("close-form-btn");
+const tasksContainer = document.getElementById("tasks-container");
+
+// ================= AUTOCOMPLETE =================
+const shortcutMap = {
+        a: ["Animal", "Appeton", "Apple ring", "Aquarium"],
+        b: ["Baby Shark", "Bear", "Berrybonz"],
+        c: ["Calci Bean", "CDZ", "Chocoo Glee", "Chop chop", "Chiby", "Chupa Chup", "Cola", "Cola bonz", "Cola Burger", "Cookies", "Cooktail", "Confetty kiss", "Crunchy Gummies"],
+        d: ["Dippy"], 
+        e: ["Exotic Mango", "Expert boost"], 
+        f: ["Fruit bites", "Frunkfuter", "Fun Gum"],
+        g: ["Grape", "Gummy Bear", "Gummy Fang", "Gummy Fries"], 
+        h: ["Happy Bear 120 gr"], 
+        i: ["Iced Cola", "Inaco"],
+        j: ["JFF", "Jungle Fun"], 
+        k: ["Krabby Patties", "Krabby Patties 72 gr", "Kuai kuai"],
+        l: ["Little Star"], 
+        m: ["MB Max", "MB Yupi", "MB Yupi 500gr", "Milly Moose", "Milk Shake", "Mini Monz", "My Watch"],
+        n: ["Neon Stix", "Neon Stix 120 gr", "Noodle"], 
+        o: ["OFF", "Orange"],
+        p: ["Party Mix", "Pastilles", "Pizza", "Puzzle"], 
+        q: ["QQ"], 
+        r: ["Raspberry & Blackberry"],
+        s: ["Sandwich", "Sour Giant Cola 500 gr", "Sour O Ring", "Sea World", "Starlite", "St kiss", "St kiss 45 gr", "St kiss 120 gr", "Sweet Heart"],
+        t: ["TJ Joybee", "Tropical"], 
+        v: ["Vicee", "Vidoran", "Vitaminis", "Vita C Gummies"],
+        w: ["Water Melon", "Worm"], 
+        y: ["Yoghurt", "Youvit"]
+    };
+
+const setupAutocomplete = (input) => {
+
+    let suggestionBox = document.createElement("div");
+
+    suggestionBox.className = "custom-autocomplete-list";
+
+    input.parentNode.appendChild(suggestionBox);
+
+    input.addEventListener('input', () => {
+
+        const fullVal = input.value;
+
+        const parts = fullVal.split(',');
+
+        const lastPart =
+            parts[parts.length - 1].trim().toLowerCase();
+
+        if (lastPart.length === 0) {
+            suggestionBox.style.display = "none";
+            return;
+        }
+
+        if (lastPart.length === 1 && shortcutMap[lastPart]) {
+
+            suggestionBox.innerHTML = "";
+
+            suggestionBox.style.display = "block";
+
+            shortcutMap[lastPart].forEach(item => {
+
+                const div = document.createElement("div");
+
+                div.className = "custom-autocomplete-item";
+
+                div.textContent = item;
+
+                div.onclick = (e) => {
+
+                    e.preventDefault();
+
+                    const prefix =
+                        parts.slice(0, -1).join(',');
+
+                    input.value =
+                        prefix ? `${prefix}, ${item}` : item;
+
+                    suggestionBox.style.display = "none";
+
+                    input.focus();
+                };
+
+                suggestionBox.appendChild(div);
+            });
+
+        } else {
+
+            suggestionBox.style.display = "none";
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+
+        if (e.target !== input) {
+            suggestionBox.style.display = "none";
+        }
+    });
+};
+
+    const statusInputs = ["lolipop", "starchless", "cupsealer", "dippy", "sandwich", "ishida", "kawashima", "pillow", "burger", "rollete", "apem", "brem", "cenil", "cucur", "gethuk", "heci", "jemblem", "klepon", "lumpia", "wajik"];
+
+statusInputs.forEach(id => {
+
+    const el = document.getElementById(id);
+
+    if (el) setupAutocomplete(el);
+});
+
+// ================= LOAD DATA =================
+async function loadData() {
+
+    try {
+
+        const snapshot = await db.collection("laporan")
+            .orderBy("date", "desc")
+            .limit(30)
+            .get();
+
+        taskData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        updateTaskContainer();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Gagal mengambil data!");
+    }
+}
+
+// ================= REFRESH BUTTON =================
+document.getElementById("refreshBtn").onclick = () => {
+    loadData();
+};
+
+// ================= AUTO REFRESH 5 MENIT =================
+setInterval(loadData, 300000);
+
+// ================= LOAD AWAL =================
+loadData();
+
+// ================= RENDER =================
+const updateTaskContainer = () => {
+
+    tasksContainer.innerHTML = "";
+
+    taskData.forEach((task) => {
+
+        const groupWrapper = document.createElement("div");
+
+        groupWrapper.className = "task-group";
+
+        const isOwner =
+            currentUser && task.createdBy === currentUser.uid;
+
+        groupWrapper.innerHTML = `
+            <div class="header-info">
+                <table class="info-table">
+                    <tr>
+                        <td>Hari / Tgl</td>
+                        <td>:</td>
+                        <td>${formatTanggalIndonesia(task.date)}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Shift</td>
+                        <td>:</td>
+                        <td>${task.shift}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Ka.Shift</td>
+                        <td>:</td>
+                        <td>${task.pic}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Nama Mesin</th>
+                        <th style="width: 50%;">Nama Produk</th>
+                        <th style="width: 20%;">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="category-row"><td colspan="3">YUPI 1</td></tr>
+                    <tr><td>Lolipop</td><td>${task.lolipop}</td><td></td></tr>
+                    <tr><td>Starchless</td><td>${task.starchless}</td><td>${task.jumlah}</td></tr>
+                    
+                    <tr class="category-row"><td colspan="3">YUPI 5</td></tr>
+                    <tr><td>Cup Sealer</td><td>${task.cupsealer}</td><td></td></tr>
+                    <tr><td>Sandwich</td><td>${task.sandwich}</td><td></td></tr>
+                    <tr><td>Ishida</td><td>${task.ishida}</td><td></td></tr>
+                    <tr><td>Kawashima</td><td>${task.kawashima}</td><td></td></tr>
+                    <tr><td>PP</td><td>${task.pillow}</td><td>${task.mpillow}</td></tr>
+                    <tr><td>MB</td><td>${task.burger}</td><td>${task.mburger}</td></tr>
+                    <tr><td>Rollete</td><td>${task.rollete}</td><td>${task.mrollete}</td></tr>
+                    
+                    <tr class="category-row"><td colspan="3">YUPI 3 / 4</td></tr>
+                    <tr><td>Ishida 1</td><td>${task.apem}</td><td></td></tr>
+                    <tr><td>Ishida 2</td><td>${task.brem}</td><td></td></tr>
+                    <tr><td>Kawashima</td><td>${task.cenil}</td><td>${task.mcenil}</td></tr>
+                    <tr><td>Multipond</td><td>${task.cucur}</td><td>${task.mcucur}</td></tr>
+                    <tr><td>Dippy</td><td>${task.dippy}</td><td></td></tr>
+                    <tr><td>Animal</td><td>${task.gethuk}</td><td>${task.mgethuk}</td></tr>
+                    <tr><td>MB</td><td>${task.heci}</td><td>${task.mheci}</td></tr>
+                    <tr><td>Cup Sealer</td><td>${task.jemblem}</td><td></td></tr>
+                    <tr><td>Berrybonz</td><td>${task.klepon}</td><td>${task.mklepon}</td></tr>
+                    <tr><td>Crunchy</td><td>${task.lumpia}</td><td>${task.mlumpia}</td></tr>
+                    <tr><td>PP</td><td>${task.wajik}</td><td>${task.mwajik}</td></tr>
+                    <tr class="category-row"><td colspan="3">KERUSAKAN</td></tr>
+<tr>
+    <td colspan="3" style="min-height: 60px; vertical-align: top; padding: 10px; white-space: pre-wrap; word-break: break-word; line-height: 1.5;">${task.uraian || "Tidak ada kerusakan"}</td>
+</tr>
+                </tbody>
+            </table>
+
+            <div class="task-actions">
+
+                ${isOwner ? `
+                    <button
+                        onclick="editTask('${task.id}')"
+                        class="blue">
+                        Edit
+                    </button>
+
+                    <button
+                        onclick="deleteTask('${task.id}')"
+                        class="red">
+                        Hapus
+                    </button>
+                ` : `
+                    <p style="
+                    font-size:12px;
+                    color:gray;
+                    text-align:right;
+                    ">
+                    Mode Lihat Saja
+                    </p>
+                `}
+            </div>
+        `;
+
+        tasksContainer.appendChild(groupWrapper);
+    });
+};
+
+// ================= FORMAT TANGGAL =================
+function formatTanggalIndonesia(dateStr) {
+
+    if (!dateStr) return "";
+
+    const dateObj = new Date(dateStr);
+
+    return new Intl.DateTimeFormat("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    }).format(dateObj);
+}
+
+// ===== SIMPAN DATA ======
+const addOrUpdateTask = () => {
+    if (!currentUser) {
+        alert("Silahkan login terlebih dahulu!");
+        login();
+        return;
+    }
+
+    // 1. Ambil ID dari hidden input (jika sedang edit)
+    const existingId = document.getElementById("dataId").value;
+    
+    // 2. Tentukan Document Reference
+    // Jika ada existingId gunakan itu, jika tidak buat ID baru otomatis
+    const docRef = existingId ? db.collection("laporan").doc(existingId) : db.collection("laporan").doc();
+
+    // 3. Susun Object Data
+    const taskObj = {
+        id: docRef.id, // Gunakan ID dari docRef
+        createdBy: currentUser.uid,
+        date: document.getElementById("date").value,
+        hari: document.getElementById("hari").value,
+        shift: document.getElementById("shift").value,
+        pic: currentUser
+    ? (NAMA_USER[currentUser.email] || currentUser.displayName)
+    : "",
+        // YUPI 1
+        lolipop: document.getElementById("lolipop").value,
+        starchless: document.getElementById("starchless").value,
+        jumlah: document.getElementById("jumlah").value,
+        // YUPI 5
+        cupsealer: document.getElementById("cupsealer").value,
+        dippy: document.getElementById("dippy").value,
+        sandwich: document.getElementById("sandwich").value,
+        ishida: document.getElementById("ishida").value,
+        kawashima: document.getElementById("kawashima").value,
+        pillow: document.getElementById("pillow").value,
+        mpillow: document.getElementById("mpillow").value,
+        burger: document.getElementById("burger").value,
+        mburger: document.getElementById("mburger").value,
+        rollete: document.getElementById("rollete").value,
+        mrollete: document.getElementById("mrollete").value,
+        // YUPI 3/4
+        apem: document.getElementById("apem").value,
+        brem: document.getElementById("brem").value,
+        cenil: document.getElementById("cenil").value,
+        mcenil: document.getElementById("mcenil").value,
+        cucur: document.getElementById("cucur").value,
+        mcucur: document.getElementById("mcucur").value,
+        gethuk: document.getElementById("gethuk").value,
+        mgethuk: document.getElementById("mgethuk").value,
+        heci: document.getElementById("heci").value,
+        mheci: document.getElementById("mheci").value,
+        jemblem: document.getElementById("jemblem").value,
+        klepon: document.getElementById("klepon").value,
+        mklepon: document.getElementById("mklepon").value,
+        lumpia: document.getElementById("lumpia").value,
+        mlumpia: document.getElementById("mlumpia").value,
+        wajik: document.getElementById("wajik").value,
+        mwajik: document.getElementById("mwajik").value,
+        uraian: document.getElementById("uraian").value,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp() // Tambahan untuk tracking waktu
+    };
+
+    // 4. Eksekusi Simpan ke Firestore
+    docRef.set(taskObj, { merge: true })
+    .then(() => {
+        loadData(); // Segarkan tampilan
+        closeModal(); // Tutup form
+        alert("Data berhasil disimpan");
+    })
+    .catch((error) => {
+        console.error("Error saving document: ", error);
+        alert("Gagal menyimpan data: " + error.message);
+    });
+};
+
+// ====== EDIT =====
+window.editTask = (id) => {
+
+    const t = taskData.find(i => i.id === id);
+
+    if (!t) return;
+
+    // ================= DATA UTAMA =================
+    document.getElementById("dataId").value = t.id || "";
+    document.getElementById("hari").value = t.hari || "";
+    document.getElementById("date").value = t.date || "";
+    document.getElementById("shift").value = t.shift || "";
+    document.getElementById("pic").value = t.pic || "";
+
+    // ================= YUPI 1 =================
+    document.getElementById("lolipop").value = t.lolipop || "";
+    document.getElementById("starchless").value = t.starchless || "";
+    document.getElementById("jumlah").value = t.jumlah || "";
+
+    // ================= YUPI 5 =================
+    document.getElementById("cupsealer").value = t.cupsealer || "";
+    document.getElementById("sandwich").value = t.sandwich || "";
+    document.getElementById("ishida").value = t.ishida || "";
+    document.getElementById("kawashima").value = t.kawashima || "";
+    document.getElementById("pillow").value = t.pillow || "";
+    document.getElementById("mpillow").value = t.mpillow || "";
+
+    document.getElementById("burger").value = t.burger || "";
+    document.getElementById("mburger").value = t.mburger || "";
+
+    document.getElementById("rollete").value = t.rollete || "";
+    document.getElementById("mrollete").value = t.mrollete || "";
+
+    // ================= YUPI 3/4 =================
+    document.getElementById("apem").value = t.apem || "";
+    document.getElementById("brem").value = t.brem || "";
+
+    document.getElementById("cenil").value = t.cenil || "";
+    document.getElementById("mcenil").value = t.mcenil || "";
+
+    document.getElementById("cucur").value = t.cucur || "";
+    document.getElementById("mcucur").value = t.mcucur || "";
+
+    document.getElementById("dippy").value = t.dippy || "";
+
+    document.getElementById("gethuk").value = t.gethuk || "";
+    document.getElementById("mgethuk").value = t.mgethuk || "";
+
+    document.getElementById("heci").value = t.heci || "";
+    document.getElementById("mheci").value = t.mheci || "";
+
+    document.getElementById("jemblem").value = t.jemblem || "";
+
+    document.getElementById("klepon").value = t.klepon || "";
+    document.getElementById("mklepon").value = t.mklepon || "";
+
+    document.getElementById("lumpia").value = t.lumpia || "";
+    document.getElementById("mlumpia").value = t.mlumpia || "";
+
+    document.getElementById("wajik").value = t.wajik || "";
+    document.getElementById("mwajik").value = t.mwajik || "";
+    document.getElementById("uraian").value = t.uraian;
+
+    dataModal.classList.add("show");
+};
+
+// ================= HAPUS =================
+window.deleteTask = (id) => {
+
+    taskIdToDelete = id;
+
+    document
+        .getElementById("deleteModal")
+        .classList.add("show");
+};
+
+document.getElementById("confirmDelete").onclick = () => {
+
+    db.collection("laporan")
+        .doc(taskIdToDelete)
+        .delete()
+
+        .then(() => {
+
+            loadData();
+
+            document
+                .getElementById("deleteModal")
+                .classList.remove("show");
+        });
+};
+
+document.getElementById("cancelDelete").onclick = () => {
+
+    document
+        .getElementById("deleteModal")
+        .classList.remove("show");
+};
+
+// ================= MODAL =================
+const closeModal = () => {
+
+    dataForm.reset();
+
+    document.getElementById("dataId").value = "";
+
+    dataModal.classList.remove("show");
+};
+
+btnTambahData.onclick = () => {
+
+    closeModal();
+
+    if (currentUser) {
+    document.getElementById("pic").value =
+    NAMA_USER[currentUser.email] || currentUser.displayName;
+}
+
+    dataModal.classList.add("show");
+};
+
+closeFormBtn.onclick = closeModal;
+
+dataForm.onsubmit = (e) => {
+
+    e.preventDefault();
+
+    addOrUpdateTask();
+};
+
+// ================= DARK MODE =================
+const darkToggle = document.getElementById("darkToggle");
+
+function setDarkMode(isDark) {
+    document.body.classList.toggle("dark", isDark);
+    localStorage.setItem("darkMode", isDark ? "1" : "0");
+    darkToggle.textContent = isDark ? "☀️" : "🌙";
+}
+
+const savedDark = localStorage.getItem("darkMode") === "1";
+setDarkMode(savedDark);
+
+darkToggle.onclick = () => {
+    const isDark = !document.body.classList.contains("dark");
+    setDarkMode(isDark);
+};
+
+// ================= HAMBURGER MENU =================
+const menuToggle = document.getElementById("menuToggle");
+const menuDropdown = document.getElementById("menuDropdown");
+
+menuToggle.onclick = () => {
+    menuDropdown.classList.toggle("show");
+};
+
+// klik di luar menu = tutup menu
+document.addEventListener("click", (e) => {
+
+    if (
+        !menuToggle.contains(e.target) &&
+        !menuDropdown.contains(e.target)
+    ) {
+        menuDropdown.classList.remove("show");
+    }
+});
+
+</script> 
+
+<iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="-1" vspace="0" width="100%" aria-hidden="true" id="I0_1779269892309" name="I0_1779269892309" src="https://laporan-harian-teknik-packing.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyCUp9V3Z1gKtXSJKfsB_Ht79fiMGv0G038&amp;appName=%5BDEFAULT%5D&amp;v=9.22.1&amp;eid=p&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fabc-static%2F_%2Fjs%2Fk%3Dgapi.lb.id.-10fEKukHoM.O%2Fd%3D1%2Frs%3DAHpOoo8DrL1aoJWbnvoqPLWTyh3DXRxHMA%2Fm%3D__features__#id=I0_1779269892309&amp;_gfid=I0_1779269892309&amp;parent=https%3A%2F%2Flaporan-harian-teknik-packing.web.app&amp;pfname=&amp;rpctoken=41255814" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe></body></html>
