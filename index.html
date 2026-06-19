@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Laporan</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: aliceblue; display: flex; justify-content: center; align-items: center; height: 100vh; }
+
+        .form-container {
+            width: 96%;
+            max-width: 500px;
+            height: 80vh;
+            background-color: #ffffff;
+            border: 1px solid #0003;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #00796B;
+            color: white;
+            height: 70px;
+            justify-content: center;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            position: relative;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #btnBack { 
+            background: none; 
+            border: none; 
+            color: white; 
+            font-size: 28px; 
+            cursor: pointer; 
+            position: absolute;
+            left: 15px;
+            top: 50%; 
+            transform: translateY(-50%);
+            z-index: 10;
+            display: none;
+        }
+
+        .menu-laporan {
+            padding: 20px;
+            display: flex;
+            flex-direction: column; 
+            gap: 20px;
+        }    
+        .menu-laporan button {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            padding: 15px;
+            cursor: pointer;
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        }  
+
+        .form-body { flex: 1; padding: 15px; overflow-y: auto; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; margin-bottom: 3px; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #0007; border-radius: 3px; }
+
+        .form-footer { background-color: #fff; padding: 16px; border-top: 1px solid #e9ecef; flex-shrink: 0; }
+        .btn-submit, .btn-main { width: 100%; background-color: #27ae60; color: white; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .sub { font-size: 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="header" id="mainHeader">
+            <button type="button" id="btnBack" onclick="kembaliMenu()">🏠</button>
+            <span id="headerTitle">Laporan Teknik Packing</span>
+        </div>
+        
+        <div class="menu-laporan" id="menuLaporan">
+            <button type="button" id="btnProduksi" class="sub" onclick="showProduksi()">Laporan Harian</button>
+            <button type="button" id="btnMaintenance" class="sub" onclick="showMaintenance()">Maintenance/Kerusakan</button>
+        </div>
+
+        <form id="formProduksi" style="display:none; flex-direction: column; height: 100%; overflow: hidden;">
+            <div class="form-body">
+                <div class="form-group"><label>Tanggal</label><input type="number" id="tanggal" placeholder="1-31"></div>
+                <div class="form-group"><label>Shift</label><select id="shift"><option value="">Pilih</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+                <div class="form-group"><label>Supervisor</label><select id="supervisor"></select></div>
+                
+                <div class="form-group"><label>Starchless</label><input type="number" id="starchless" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Hassia</label><input type="number" id="hassia" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Kawashima</label><input type="number" id="kawashima" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Multipond</label><input type="number" id="multipond" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>PP Y3</label><input type="number" id="pp" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Crunchy</label><input type="number" id="crunchy" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Animal</label><input type="number" id="animal" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Zugi</label><input type="number" id="zugi" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Dippy</label><input type="number" id="dippy" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Animal L2</label><input type="number" id="animal2" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Noodle</label><input type="number" id="noodle" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Berrybonz</label><input type="number" id="berrybonz" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>G. Fries Y4</label><input type="number" id="fries" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>MB Y4</label><input type="number" id="mb" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>My Watch</label><input type="number" id="mywatch" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Ishida Y5</label><input type="number" id="ishida" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Cup Sealer</label><input type="number" id="cupsealer" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>Rollete</label><input type="number" id="rollete" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>PP Y5</label><input type="number" id="pp5" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>MB Y5</label><input type="number" id="mb5" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>MB 35 Gr</label><input type="number" id="mb35" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>MB Max</label><input type="number" id="max" placeholder="---mesin yg jalan---"></div>
+                <div class="form-group"><label>G. Fries Y5</label><input type="number" id="gfries" placeholder="---mesin yg jalan---"></div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn-submit" id="submitBtn">Simpan</button>
+            </div>
+        </form>
+
+        <form id="formMaintenance" style="display:none; flex-direction: column; height: 100%; overflow: hidden;">
+            <div class="form-body">
+                <div class="form-group"><label>Tanggal</label><input type="date" id="mtTanggal"></div>
+                <div class="form-group"><label>Shift</label><select id="mtShift"><option value="">Pilih Shift</option><option value="1">Shift 1</option><option value="2">Shift 2</option><option value="3">Shift 3</option></select></div>
+                <div class="form-group"><label>Area</label><select id="mtArea"><option value="">Pilih area</option><option value="YUPI 1">YUPI 1</option><option value="YUPI 3">YUPI 3</option><option value="YUPI 4">YUPI 4</option><option value="YUPI 5">YUPI 5</option></select></div>
+                <div class="form-group"><label>Mesin</label><input type="text" id="mtMesin"></div>
+                <div class="form-group"><label>Remark</label><textarea id="mtRemark"></textarea></div>
+                <div class="form-group"><label>Supervisor</label><select id="mtSupervisor"></select></div>
+            </div>
+            <div class="form-footer">
+                <button type="submit" class="btn-main" id="btnMainSubmit">Simpan</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function showProduksi(){
+            document.getElementById("formProduksi").style.display="flex";
+            document.getElementById("menuLaporan").style.display="none";
+            document.getElementById("btnBack").style.display="block";
+            document.getElementById("headerTitle").innerHTML="Form Laporan Harian";
+        }
+
+        function showMaintenance(){
+            document.getElementById("formMaintenance").style.display="flex";
+            document.getElementById("menuLaporan").style.display="none";
+            document.getElementById("btnBack").style.display="block";
+            document.getElementById("headerTitle").innerHTML="Form Maintenance";
+        }
+
+        function kembaliMenu(){
+            document.getElementById("formProduksi").style.display="none";
+            document.getElementById("formMaintenance").style.display="none";
+            document.getElementById("menuLaporan").style.display="flex";
+            document.getElementById("btnBack").style.display="none";
+            document.getElementById("headerTitle").innerHTML="Laporan Teknik Packing";
+        }
+    
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxgJU72aleI9zAv43_fUYyZ4Lj10cFnGhMcBi6DFXwRU7rkwzd5qC5tRk9Hcvh00MU/exec";
+        
+        const daftarSupervisor = ["Ruslan Budi", "Sutarno", "Sudirman", "Saepudin"];
+
+        function isiSupervisor(){
+            const produksi = document.getElementById("supervisor");
+            const maintenance = document.getElementById("mtSupervisor");
+
+            produksi.innerHTML = '<option value="">-- Pilih Supervisor --</option>';
+            maintenance.innerHTML = '<option value="">-- Pilih Supervisor --</option>';
+
+            daftarSupervisor.forEach(function(nama){
+                produksi.innerHTML += `<option value="${nama}">${nama}</option>`;
+                maintenance.innerHTML += `<option value="${nama}">${nama}</option>`;
+            });
+        }
+
+        // SUBMIT FORM PRODUKSI
+        document.getElementById("formProduksi").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById("submitBtn");
+
+            const data = {
+                tanggal: document.getElementById("tanggal").value,
+                shift: document.getElementById("shift").value,
+                supervisor: document.getElementById("supervisor").value,
+                starchless: document.getElementById("starchless").value,
+                hassia: document.getElementById("hassia").value,
+                kawashima: document.getElementById("kawashima").value,
+                multipond: document.getElementById("multipond").value,
+                pp: document.getElementById("pp").value,
+                crunchy: document.getElementById("crunchy").value,
+                animal: document.getElementById("animal").value,
+                zugi: document.getElementById("zugi").value,
+                dippy: document.getElementById("dippy").value,
+                animal2: document.getElementById("animal2").value,
+                noodle: document.getElementById("noodle").value,
+                berrybonz: document.getElementById("berrybonz").value,
+                fries: document.getElementById("fries").value,
+                mb: document.getElementById("mb").value,
+                mywatch: document.getElementById("mywatch").value,
+                ishida: document.getElementById("ishida").value,
+                cupsealer: document.getElementById("cupsealer").value,
+                rollete: document.getElementById("rollete").value,
+                pp5: document.getElementById("pp5").value,
+                mb5: document.getElementById("mb5").value,
+                mb35: document.getElementById("mb35").value,
+                max: document.getElementById("max").value,
+                gfries: document.getElementById("gfries").value
+            };
+
+            if (data.tanggal < 1 || data.tanggal > 31) {
+                alert("Tanggal harus 1 - 31");
+                return;
+            }
+            if (data.shift < 1 || data.shift > 3) {
+                alert("Shift harus 1 - 3");
+                return;
+            }
+            if (data.supervisor == "") {
+                alert("Silakan pilih supervisor");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Menyimpan...";
+
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                if (result.success){
+                    alert("Data berhasil disimpan");
+                    document.getElementById("formProduksi").reset();
+                    isiSupervisor(); // Reset ulang pilihan supervisor
+                    kembaliMenu();
+                } else {
+                    alert(result.message || "Gagal menyimpan data");
+                }
+            } catch (err) {
+                alert("Gagal terhubung ke server");
+                console.error(err);
+            }
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Simpan";
+        });
+
+        // SUBMIT FORM MAINTENANCE
+        document.getElementById("formMaintenance").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const inputTanggal = document.getElementById("mtTanggal").value;
+            const shift = document.getElementById("mtShift").value;
+            const supervisor = document.getElementById("mtSupervisor").value;
+            const btnMainSubmit = document.getElementById("btnMainSubmit");
+
+            if (!inputTanggal) { alert("Silakan pilih tanggal terlebih dahulu"); return; }
+            if (!shift) { alert("Silakan pilih shift terlebih dahulu"); return; }
+            if (supervisor == "") { alert("Silakan pilih supervisor"); return; }
+
+            const data = {
+                jenis: "maintenance",
+                tanggal: inputTanggal,
+                shift: shift,
+                area: document.getElementById("mtArea").value,
+                mesin: document.getElementById("mtMesin").value,
+                remark: document.getElementById("mtRemark").value,
+                supervisor: supervisor
+            };
+
+            btnMainSubmit.disabled = true;
+            btnMainSubmit.textContent = "Menyimpan...";
+
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(result.message);
+                    document.getElementById("formMaintenance").reset();
+                    isiSupervisor(); // Reset ulang pilihan supervisor
+                    kembaliMenu();
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Gagal terhubung ke server");
+            }
+            btnMainSubmit.disabled = false;
+            btnMainSubmit.textContent = "Simpan";
+        });
+
+        window.onload = function(){
+            isiSupervisor();
+        }
+    </script>
+</body>
+</html>
